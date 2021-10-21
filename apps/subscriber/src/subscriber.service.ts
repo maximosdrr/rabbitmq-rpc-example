@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RabbitRPC, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
+import { ConsumeMessage } from 'amqplib';
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -12,7 +13,7 @@ export class SubscriberService {
     routingKey: 'orange',
     queue: 'orange-queue',
   })
-  public async pubSubHandler(msg) {
+  public async pubSubHandler(msg, amqpMsg: ConsumeMessage) {
     console.log(`[Orange]: Received message: ${msg}`);
   }
 
@@ -21,7 +22,7 @@ export class SubscriberService {
     routingKey: 'red',
     queue: 'red-queue',
   })
-  public async pubSubHandler1(msg) {
+  public async pubSubHandler1(msg, amqpMsg: ConsumeMessage) {
     console.log(`[RED]: Received message: ${msg}`);
   }
 
@@ -29,8 +30,12 @@ export class SubscriberService {
     exchange: 'exchange2',
     routingKey: 'blue',
   })
-  public async rpcHandler(msg) {
-    console.log('blue');
+  public async rpcHandler(msg, amqpMsg: ConsumeMessage) {
+    console.log({
+      correlationId: amqpMsg.properties.correlationId,
+      replyTo: amqpMsg.properties.replyTo,
+      msg,
+    });
     const randomNum = this.getRandomInt(1, 10);
     await sleep(5000);
 
@@ -43,8 +48,12 @@ export class SubscriberService {
     exchange: 'exchange2',
     routingKey: 'green',
   })
-  public async rpcHandler2(msg) {
-    console.log('green');
+  public async rpcHandler2(msg, amqpMsg: ConsumeMessage) {
+    console.log({
+      correlationId: amqpMsg.properties.correlationId,
+      replyTo: amqpMsg.properties.replyTo,
+      msg,
+    });
     await sleep(3000);
 
     return {

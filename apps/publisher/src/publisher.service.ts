@@ -19,7 +19,7 @@ export class PublisherService {
   }
 
   async publish() {
-    await this.amqpConnection.publish('exchange1', 'red', 'hello world');
+    await this.amqpConnection.publish('exchange1', 'orange', 'hello world');
 
     return { sent: Math.random() };
   }
@@ -30,7 +30,7 @@ export class PublisherService {
       const randomNum = this.getRandomInt(1, 10);
       const isAuthenticated = randomNum < 5;
 
-      if (isAuthenticated) {
+      if (!isAuthenticated) {
         const rpcResponse = await this.amqpConnection.request<RpcResponse>({
           exchange: 'exchange2',
           routingKey: 'blue',
