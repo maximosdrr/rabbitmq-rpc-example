@@ -23,11 +23,13 @@ export class SubscriberService {
   })
   public async rpcHandler(msg) {
     console.log(msg);
-    await sleep(5000);
     const randomNum = this.getRandomInt(1, 10);
+    await sleep(5000);
+
+    const authorized = randomNum < 5;
 
     return {
-      authorized: randomNum < 5,
+      authorized,
       randomNum,
     };
   }

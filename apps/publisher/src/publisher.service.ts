@@ -28,8 +28,9 @@ export class PublisherService {
     const timeout = 30; //seconds
     try {
       const randomNum = this.getRandomInt(1, 10);
+      const isAuthenticated = randomNum < 5;
 
-      if (randomNum < 5) {
+      if (isAuthenticated) {
         const rpcResponse = await this.amqpConnection.request<RpcResponse>({
           exchange: 'exchange1',
           routingKey: 'rpc-topic',
