@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { AmqpConnection, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 
 type RpcResponse = {
   authorized: boolean;
@@ -19,7 +19,7 @@ export class PublisherService {
   }
 
   async publish() {
-    await this.amqpConnection.publish('exchange1', 'topic', 'hello world');
+    await this.amqpConnection.publish('exchange1', 'red', 'hello world');
 
     return { sent: Math.random() };
   }
@@ -32,8 +32,8 @@ export class PublisherService {
 
       if (isAuthenticated) {
         const rpcResponse = await this.amqpConnection.request<RpcResponse>({
-          exchange: 'exchange1',
-          routingKey: 'rpc-topic',
+          exchange: 'exchange2',
+          routingKey: 'blue',
           payload: {
             username: 'email@rankmyapp.com',
             password: '621251',
@@ -42,7 +42,7 @@ export class PublisherService {
         });
 
         if (!rpcResponse.authorized) {
-          console.log('Calling recursion', rpcResponse.randomNum);
+          console.log('Calling recursion', rpcResponse);
           return this.publishRPC();
         }
 

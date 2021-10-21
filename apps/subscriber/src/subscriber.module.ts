@@ -8,7 +8,11 @@ import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
       exchanges: [
         {
           name: 'exchange1',
-          type: 'topic',
+          type: 'direct',
+        },
+        {
+          name: 'exchange2',
+          type: 'direct',
         },
       ],
       uri: 'amqp://guest:guest@localhost:5672',

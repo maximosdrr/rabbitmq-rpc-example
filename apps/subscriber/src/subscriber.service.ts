@@ -9,28 +9,46 @@ function sleep(ms) {
 export class SubscriberService {
   @RabbitSubscribe({
     exchange: 'exchange1',
-    routingKey: 'topic',
-    queue: 'subscribe-queue',
+    routingKey: 'orange',
+    queue: 'orange-queue',
   })
   public async pubSubHandler(msg) {
-    console.log(`Received message: ${msg}`);
+    console.log(`[Orange]: Received message: ${msg}`);
+  }
+
+  @RabbitSubscribe({
+    exchange: 'exchange1',
+    routingKey: 'red',
+    queue: 'red-queue',
+  })
+  public async pubSubHandler1(msg) {
+    console.log(`[RED]: Received message: ${msg}`);
   }
 
   @RabbitRPC({
-    exchange: 'exchange1',
-    routingKey: 'rpc-topic',
-    queue: 'rpc-queue',
+    exchange: 'exchange2',
+    routingKey: 'blue',
   })
   public async rpcHandler(msg) {
-    console.log(msg);
+    console.log('blue');
     const randomNum = this.getRandomInt(1, 10);
     await sleep(5000);
 
     const authorized = randomNum < 5;
 
+    return { authorized, randomNum };
+  }
+
+  @RabbitRPC({
+    exchange: 'exchange2',
+    routingKey: 'green',
+  })
+  public async rpcHandler2(msg) {
+    console.log('green');
+    await sleep(3000);
+
     return {
-      authorized,
-      randomNum,
+      another: '',
     };
   }
 
