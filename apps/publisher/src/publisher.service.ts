@@ -39,6 +39,7 @@ export class PublisherService {
             password: '621251',
           },
           timeout: 1000 * 60 * timeout,
+          // correlationId: 'mycorrelationid', you can set your own correlationId here
         });
 
         if (!rpcResponse.authorized) {
